@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Панорама 3:1</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@photo-sphere-viewer/core/index.min.css" />
+    <style>
+        body { margin: 0; padding: 0; overflow: hidden; }
+        #viewer { width: 100vw; height: 100vh; }
+    </style>
+</head>
+<body>
+
+<div id="viewer"></div>
+
+<!-- Должен быть только ОДИН importmap на всю страницу -->
+<script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three/build/three.module.js",
+            "@photo-sphere-viewer/core": "https://cdn.jsdelivr.net/npm/@photo-sphere-viewer/core/index.module.js"
+        }
+    }
+</script>
+
+<script type="module">
+    import { Viewer } from '@photo-sphere-viewer/core';
+
+    const viewer = new Viewer({
+        container: document.querySelector('#viewer'),
+        
+        // Укажите прямую ссылку на файл (локальный путь или хостинг с CORS)
+        panorama: 'pano.jpg',
+
+        // Автоматический расчет пропорций для панорамы 3:1 (или любой неполной)
+        panoData: (image) => ({
+            fullWidth: image.width,
+            fullHeight: Math.round(image.width / 2), // Виртуальная полная высота (всегда 1/2 ширины)
+            croppedWidth: image.width,
+            croppedHeight: image.height,
+            croppedX: 0,
+            croppedY: Math.round((image.width / 2 - image.height) / 2), // Центрируем по вертикали
+        }),
+    });
+</script>
+
+</body>
+</html>
